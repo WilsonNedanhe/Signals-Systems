@@ -1,0 +1,43 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import signal
+
+# Define numerator and denominator coefficients
+num = [1, 0, 16]       # s^2 + 0⋅s + 16
+den1 = [1, 2, 26]      # s^2 + 2⋅s + 26  → H1(s)
+den2 = [1, 2, 10]      # s^2 + 2⋅s + 10  → H2(s)
+
+# Create transfer‐function objects
+H1 = signal.TransferFunction(num, den1)
+H2 = signal.TransferFunction(num, den2)
+
+# Frequency range for Bode (rad/s)
+w = np.logspace(-1, 2, 500)  # from 0.1 to 100 rad/s
+
+# Compute magnitude (dB) and phase (deg)
+w1, mag1, phase1 = signal.bode(H1, w)
+w2, mag2, phase2 = signal.bode(H2, w)  # w2 == w1
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+# Magnitude subplot
+plt.subplot(2, 1, 1)
+plt.semilogx(w1, mag1, label='H1(s) = (s²+16)/(s²+2s+26)')
+plt.semilogx(w2, mag2, label='H2(s) = (s²+16)/(s²+2s+10)')
+plt.title('Bode Plot: Magnitude and Phase of H1 and H2')
+plt.ylabel('Magnitude (dB)')
+plt.grid(True, which='both', linestyle='--', alpha=0.7)
+plt.legend()
+
+# Phase subplot
+plt.subplot(2, 1, 2)
+plt.semilogx(w1, phase1, label='H1(s)')
+plt.semilogx(w2, phase2, label='H2(s)')
+plt.xlabel('Frequency (rad/s)')
+plt.ylabel('Phase (degrees)')
+plt.grid(True, which='both', linestyle='--', alpha=0.7)
+plt.legend()
+
+plt.tight_layout()
+plt.show()
